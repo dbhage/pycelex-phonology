@@ -3,15 +3,16 @@ pycelex-phonology
 
 Python implementation of the celex2 dictionary. Only phonology is implemented.
 
-Usage:
-'''
+##Usage:
+```
 from celex.factory import build_celex
+
 path_to_celex = "YOUR PATH TO CELEX"
 celex = build_celex(path_to_celex, 0, 0) # english language, version 0
+
 word = "dean"
 phoneme_translation = celex[word]
-# phoneme_translation now has the word dean in phonemes.
-'''
+```
 
 The above snippet shows a simple way to use pycelex-phonology.
 
