@@ -1,0 +1,1 @@
+TEST_CELEX_PATH = "test_celex2/"
