@@ -175,21 +175,23 @@ class Celex:
         @precondition: self.celex must be set
         @return: an approximation for the word
         '''
-        if word in self.celex:
-            return self.celex[word]
+        if len(word) > 1 and word in self.celex:
+            print (word)
+            return [(word, self.celex[word])]
         
         phoneme_translation = []
         
         for i in range(1, len(word)):
             current_word = word[:len(word)-i]
             if current_word in self.celex:
-                if len(current_word) != 1: # don't want single letters to be translated
-                    phoneme_translation += self.celex[current_word] + self.right_to_left(word[len(word)-i:])
+                if len(current_word) > 1: # don't want single letters to be translated
+                    print (current_word)
+                    phoneme_translation += [(current_word, self.celex[current_word])] + self.right_to_left(word[len(word)-i:])
                 else:
                     phoneme_translation += self.right_to_left(word[len(word)-i:])
                 break
-
-        return ['-'.join(phoneme_translation)] if (phoneme_translation != [] and self.version == 0) else phoneme_translation
+        
+        return phoneme_translation
 
     def left_to_right(self, word):
         '''
@@ -199,21 +201,23 @@ class Celex:
         @precondition: self.celex must be set
         @return: an approximation for the word
         '''
-        if word in self.celex:
-            return self.celex[word]
+        if len(word) > 1 and word in self.celex:
+            print (word)
+            return [(word, self.celex[word])]
 
         phoneme_translation = []
         
         for i in range(0, len(word)):
             current_word = word[i:]
             if current_word in self.celex:
-                if len(current_word) != 1: # don't want single letters to be translated
-                    phoneme_translation += self.left_to_right(word[:i]) + self.celex[current_word]
+                if len(current_word) > 1: # we don't want single letters to be translated
+                    print (current_word)
+                    phoneme_translation += self.left_to_right(word[:i]) + [(current_word, self.celex[current_word])]
                 else:
                     phoneme_translation += self.left_to_right(word[:i])
                 break
 
-        return ['-'.join(phoneme_translation)] if (phoneme_translation != [] and self.version == 0) else phoneme_translation
+        return phoneme_translation
     
     def find_intersect(self, word):
         '''
@@ -264,45 +268,3 @@ class Celex:
                         smallest = phon_trans
         
         return [smallest] if (smallest != None and self.version == 0) else smallest
-
-class EnglishCelex(Celex):
-    '''
-    English Celex
-    '''
-    
-    def __init__(self):
-        '''
-        Constructor
-        '''
-        self.prefix = 'e'
-        self.language = 'english'
-        self.word_index = 1
-        self.phon_index = 6
-                
-class GermanCelex(Celex):
-    '''
-    German Celex
-    '''
-    
-    def __init__(self):
-        '''
-        Constructor
-        '''
-        self.prefix = 'g'
-        self.language = 'german'
-        self.word_index = 1
-        self.phon_index = 4
-                
-class DutchCelex(Celex):
-    '''
-    Dutch Celex
-    '''
-
-    def __init__(self):
-        '''
-        Constructor
-        '''
-        self.prefix = 'd'
-        self.language = 'dutch'
-        self.word_index = 1
-        self.phon_index = 4        

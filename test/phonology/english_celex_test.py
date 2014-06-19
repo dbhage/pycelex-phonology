@@ -3,13 +3,13 @@ Created on Jun 9, 2014
 
 @author: dbhage
 
-English Celex Test Suite
+English Celex Test Class
 
 '''
 
 import unittest
 
-from celex.celex import EnglishCelex 
+from celex.phonology.english_celex import EnglishCelex 
 from test import TEST_CELEX_PATH
 
 class EnglishCelexTest(unittest.TestCase):
@@ -448,7 +448,7 @@ class EnglishCelexTest(unittest.TestCase):
                        "pol": "POL"}
         
         self.assertTrue("pol" in celex, "Existing word not found in celex.")
-
+    
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test_case_1']
     unittest.main()

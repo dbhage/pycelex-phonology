@@ -1,0 +1,1 @@
+Run test_suite.py with PyUnit to run all the tests in one go.

@@ -6,8 +6,11 @@ Created on Jun 2, 2014
 Factory to create Celex objects
 '''
 
-from celex import EnglishCelex, GermanCelex, DutchCelex
 import os
+
+from celex.phonology.english_celex import EnglishCelex
+from celex.phonology.dutch_celex import DutchCelex
+from celex.phonology.german_celex import GermanCelex
 
 def build_celex(celex_path, language, version):
     '''

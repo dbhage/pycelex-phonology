@@ -4,15 +4,19 @@ Created on Mar 19, 2014
 
 @author: dbhage
 
-Tests for "celex.factory" module. 
-15 Test Cases.
+CelexFactory Test Class
 
 '''
 
 import unittest
-from celex.factory import build_celex
+
+from celex.factory.factory import build_celex
+
 from test import TEST_CELEX_PATH
-from celex.celex import EnglishCelex, GermanCelex, DutchCelex
+
+from celex.phonology.english_celex import EnglishCelex
+from celex.phonology.german_celex import GermanCelex
+from celex.phonology.dutch_celex import DutchCelex
 
 class CelexFactoryTest(unittest.TestCase):
 
