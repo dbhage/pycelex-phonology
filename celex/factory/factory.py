@@ -14,12 +14,22 @@ from celex.phonology.german_celex import GermanCelex
 
 def build_celex(celex_path, language, version):
     '''
-    Build the celex dictionary.
+    Build the Celex2 dictionary.
     Phoneme translations will always be returned as a list - See version for format.
-    @param celex_path: Path to the celex2 folder
+    
+    @param celex_path: Path to the celex2 directory
+    @type celex_path: str
+    
     @param language: 0 - English, 1 - German, 2 - Dutch
+    @type language: int
+    
     @param version: 0 - leading apostrophe removed, 1 - split on hyphens, 2 - all characters listed separately
+    @type version: int
+    
     @return: Celex object built according to parameters passed
+    @rtype: Celex obj
+    
+    @raise ValueError: raises ValueError if celex_path parameter is invalid or language or version out of range
     '''
     check_path(celex_path)
 
@@ -43,6 +53,11 @@ def build_celex(celex_path, language, version):
 def check_path(celex_path):
     '''
     Check if the path to celex2 exists
+    
+    @param celex_path: the path to the celex2 root directory
+    @type celex_path: str
+    
+    @raise ValueError: raised if celex_path does not exist
     '''
     if not os.path.exists(celex_path):
         raise ValueError("Celex Path \'" + celex_path + "\' does not exist.")

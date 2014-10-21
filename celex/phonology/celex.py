@@ -1,11 +1,9 @@
 '''
-
 Created on Mar 18, 2014
 
 @author: dbhage
 
-The classes required to build the celex dictionary.
-
+The abstract class to be extended by classes implementing the 3 different celex dictionaries
 '''
 
 import os, re
@@ -13,15 +11,22 @@ from abc import ABCMeta
 
 class Celex:
     '''
-    Abstract class to be extended by classes implementing the 3 different celex dictionaries.
+    @summary: Abstract class to be extended by classes implementing the 3 different celex dictionaries.
     '''
     __metaclass__ = ABCMeta
     
     def build(self, celex_path, version):
         '''
         Build the phoneme dict
-        @param celex_path: the path to the celex2 main folder
-        @param build_function: function to build the dictionary
+        
+        @param celex_path: the path to the celex2 root directory
+        @type celex_path: str
+        
+        @param version: 0, 1 or 2
+        @type version: int 
+
+        @precondition: a check was performed to verify celex_path is valid
+
         @postcondition: self.path, self.version and self.celex set
         '''
         self.path = celex_path + '/' + self.language + '/' + self.prefix + "pw" + '/' + self.prefix + "pw.cd"
@@ -42,8 +47,10 @@ class Celex:
         Build celex dictionary - V0
         A dict is built with words as keys and phoneme translations as values.
         The phoneme translation is a list with one element. That element holds the translation with any preceding apostrophe removed.
+
         @precondition: self.phon_index, self.word_index must have been assigned values. This is done in the constructor of the subclass. 
                        self.get_rows() must have been called so self.rows is assigned the proper value.
+
         @postcondition: self.celex is set
         '''
         phoneme_dict = dict()
@@ -67,8 +74,10 @@ class Celex:
         Build celex dictionary - V1
         A dict is built with words as keys and phoneme translations as values. 
         The phoneme translations has no preceding apostrophe and is split on hyphens.
+
         @precondition: self.phon_index, self.word_index must have been assigned values. This is done in the constructor of the subclass. 
                        self.get_rows() must have been called so self.rows is assigned the proper value.
+
         @postcondition: self.celex is set
         '''
         phoneme_dict = dict()
@@ -91,8 +100,10 @@ class Celex:
         Build celex dictionary - V2
         A dict is built with words as keys and phoneme translations as values. 
         The phoneme translations has no preceding apostrophe or any hyphens. Each element in the list is a character representing the phonetic symbols for that word.
+
         @precondition: self.phon_index, self.word_index must have been assigned values. This is done in the constructor of the subclass. 
                        self.get_rows() must have been called so self.rows is assigned the proper value.
+
         @postcondition: self.celex is set
         '''
         phoneme_dict = dict()
@@ -113,7 +124,9 @@ class Celex:
     def build_by_bigram(self):
         '''
         Build dictionary by indexing using the first bigrams of each word.
+
         @precondition: self.celex is set
+
         @postcondition: self.celex_by_bigram set
         '''
         celex_by_bigram = dict()
@@ -129,6 +142,7 @@ class Celex:
     def check_path(self):
         '''
         Check if the path to celex2 exists
+
         @precondition: self.path must have been set
         '''
         if not os.path.exists(self.path):
@@ -137,7 +151,9 @@ class Celex:
     def get_rows(self):
         '''
         Get rows from the file with words and phoneme translations
+
         @precondition: self.path must have been set
+
         @postcondition: self.rows set
         '''
         try:
@@ -151,8 +167,14 @@ class Celex:
     def __getitem__(self, word):
         '''
         Implementation of the indexing operator
+
+        @param word: word user is trying to get from celex
+        @type word: str
+
         @precondition: self.celex dict must have been set
+
         @return: phoneme translation for word in the form of a list
+        @rtype: list
         '''
         if word is None or word == '' or word not in self.celex:
             return None
@@ -162,7 +184,12 @@ class Celex:
     def __contains__(self, word):
         '''
         Implementation of the 'in' operator
+
+        @param word: word user is trying to check presence for in celex
+        @type word: str
+
         @return: True if word in self.celex, False otherwise
+        @rtype: boolean
         '''
         return word in self.celex
         
@@ -171,9 +198,14 @@ class Celex:
         Strip one letter at a time from the right and try to find a match in the remaining word in celex.
         If a match is found, remove the part of the word for which the match was found and then recurse
         to find a match for the remaining part of word.
+
         @param word: the word for which we need an approximate translation
+        @type word: str
+
         @precondition: self.celex must be set
+
         @return: an approximation for the word
+        @rtype: list
         '''
         if len(word) > 1 and word in self.celex:
             print (word)
@@ -185,7 +217,6 @@ class Celex:
             current_word = word[:len(word)-i]
             if current_word in self.celex:
                 if len(current_word) > 1: # don't want single letters to be translated
-                    print (current_word)
                     phoneme_translation += [(current_word, self.celex[current_word])] + self.right_to_left(word[len(word)-i:])
                 else:
                     phoneme_translation += self.right_to_left(word[len(word)-i:])
@@ -198,8 +229,14 @@ class Celex:
         Strip one letter at a time from the left and try to find a match in the remaining word in celex.
         If a match is found, remove the part of the word for which the match was found and then recurse
         to find a match for the remaining part of word.
+
+        @param word: the word for which we need an approximate translation
+        @type word: str
+
         @precondition: self.celex must be set
+
         @return: an approximation for the word
+        @rtype: list
         '''
         if len(word) > 1 and word in self.celex:
             print (word)
@@ -222,8 +259,14 @@ class Celex:
     def find_intersect(self, word):
         '''
         Find the smallest word which contains the required word
+
+        @param word: the word for which we need an approximate translation
+        @type word: str
+
         @precondition: self.celex must be set
+
         @return: an approximation for the word
+        @rtype: list
         '''
         if word in self.celex:
             return self.celex[word]
@@ -244,11 +287,20 @@ class Celex:
     def levenshtein_approximation(self, word, levenshtein_function, threshold):
         '''
         Find the smallest word with levenshtein distance <threshold> of required word
-        @param word: the word
+
+        @param word: the word for which we need an approximate translation
+        @type word: str
+
         @param levenshtein_function: a function taking in 2 strings and returning an integer representing the levenshtein edit-distance between the 2 strings
+        @type levenshtein_function: function
+    
         @param threshold: find words within levenshtein distance of threshold only
+        @type threshold: int
+
         @precondition: self.celex must be set
+
         @return: an approximation for the word
+        @rtype: list
         '''
         if word in self.celex:
             return self.celex[word]

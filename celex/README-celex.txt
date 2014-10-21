@@ -5,5 +5,5 @@ phonology/
 	I do not recommend using those modules directly. Use the factory.
 
 factory/
-	the module i recommend using to build celex
+	the module I recommend using to build celex
 	read factory.py to understand what parameters need to be passed to factory.
